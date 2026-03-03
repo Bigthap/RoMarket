@@ -1,0 +1,184 @@
+/* ===== Hall of Fame ===== */
+.fame-page {
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.fame-header-section {
+    text-align: center;
+    margin-bottom: 2.5rem;
+    padding: 3rem 2rem;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-xl);
+    position: relative;
+    overflow: hidden;
+}
+
+.fame-header-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(245, 158, 11, 0.08), rgba(139, 92, 246, 0.08), rgba(6, 182, 212, 0.08));
+    pointer-events: none;
+}
+
+.fame-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    animation: glow 2s ease-in-out infinite;
+    display: inline-block;
+    color: #f59e0b;
+    text-shadow: 0 0 30px rgba(245, 158, 11, 0.4);
+    position: relative;
+}
+
+.fame-main-title {
+    font-size: 2rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, #f59e0b, #f97316, #ec4899);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 0.5rem;
+    position: relative;
+}
+
+.fame-subtitle {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    position: relative;
+}
+
+/* ===== Fame Grid ===== */
+.fame-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+}
+
+/* ===== Fame Card ===== */
+.fame-card {
+    background: var(--bg-card);
+    border: 1px solid rgba(245, 158, 11, 0.15);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    transition: var(--transition);
+    animation: scaleIn 0.4s ease;
+}
+
+.fame-card:hover {
+    border-color: rgba(245, 158, 11, 0.4);
+    box-shadow: 0 0 25px rgba(245, 158, 11, 0.1);
+    transform: translateY(-4px);
+}
+
+.fame-card-image {
+    width: 100%;
+    height: 200px;
+    overflow: hidden;
+}
+
+.fame-card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: var(--transition);
+}
+
+.fame-card:hover .fame-card-image img {
+    transform: scale(1.05);
+}
+
+.fame-card-body {
+    padding: 1.25rem 1.5rem 0.75rem;
+}
+
+.fame-badge-row {
+    margin-bottom: 0.75rem;
+}
+
+.fame-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.3rem 0.85rem;
+    border-radius: 50px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(249, 115, 22, 0.2));
+    border: 1px solid rgba(245, 158, 11, 0.3);
+    color: #f59e0b;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.fame-card-title {
+    font-size: 1.15rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    color: var(--text-primary);
+}
+
+.fame-card-desc {
+    color: var(--text-secondary);
+    font-size: 0.88rem;
+    line-height: 1.7;
+}
+
+.fame-card-footer {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem 1.5rem;
+    border-top: 1px solid var(--border-color);
+}
+
+.fame-footer-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid rgba(245, 158, 11, 0.3);
+}
+
+.fame-footer-by {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+}
+
+.fame-footer-time {
+    display: block;
+    font-size: 0.72rem;
+    color: var(--text-muted);
+}
+
+/* ===== Navbar Fame Link ===== */
+.nav-fame {
+    color: #f59e0b;
+}
+
+.nav-fame:hover {
+    background: rgba(245, 158, 11, 0.1);
+    color: #f59e0b;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 768px) {
+    .fame-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .fame-main-title {
+        font-size: 1.5rem;
+    }
+
+    .fame-header-section {
+        padding: 2rem 1.25rem;
+    }
+}
