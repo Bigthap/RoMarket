@@ -3,7 +3,29 @@
 // ตรวจว่าล็อกอินอยู่ไหม
 function isLoggedIn()
 {
-    return isset($_SESSION['user_id']);
+    if (!isset($_SESSION['user_id'])) {
+        return false;
+    }
+
+    // ต้องดึง $pdo จาก global scope เพราะ isLoggedIn ถูกเรียกในหลายไฟล์
+    global $pdo;
+
+    if (isset($pdo)) {
+        $stmt = $pdo->prepare("SELECT is_banned FROM users WHERE id = ?");
+        $stmt->execute([$_SESSION['user_id']]);
+        $is_banned = $stmt->fetchColumn();
+
+        if ($is_banned) {
+            // โดนแบนกลางอากาศ ทำลาย Session ทิ้งเลย
+            session_destroy();
+            unset($_SESSION['user_id']);
+            unset($_SESSION['username']);
+            unset($_SESSION['role']);
+            return false;
+        }
+    }
+
+    return true;
 }
 
 // ตรวจว่าเป็น Admin ไหม
