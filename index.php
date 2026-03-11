@@ -3,9 +3,7 @@ $pageTitle = 'ฟีด';
 require_once 'config.php';
 require_once 'functions.php';
 
-if (!isLoggedIn()) {
-    redirect('login.php');
-}
+$isGuest = !isLoggedIn();
 
 // ดึงพารามิเตอร์ Filter ทั้งหมด
 $tagSlug = $_GET['tag'] ?? '';
@@ -251,7 +249,7 @@ require_once 'header.php';
                                 </div>
                             </div>
                         </div>
-                        <?php if ($post['user_id'] == $_SESSION['user_id'] || isAdmin()): ?>
+                        <?php if (!$isGuest && ($post['user_id'] == $_SESSION['user_id'] || isAdmin())): ?>
                             <button class="post-delete-btn" onclick="deletePost(<?= $post['id'] ?>)" title="ลบโพสต์">
                                 <i class="fas fa-trash-alt"></i>
                             </button>
@@ -291,14 +289,21 @@ require_once 'header.php';
                         <div class="post-actions">
                             <?php
                             $likeCount = $post['like_count'];
-                            $liked = isLiked($pdo, $post['id'], $_SESSION['user_id']);
+                            $liked = $isGuest ? false : isLiked($pdo, $post['id'], $_SESSION['user_id']);
                             $commentCount = $post['comment_count'];
                             ?>
-                            <button class="post-action-btn <?= $liked ? 'liked' : '' ?>"
-                                onclick="toggleLike(<?= $post['id'] ?>, this)" id="like-btn-<?= $post['id'] ?>">
-                                <i class="<?= $liked ? 'fas' : 'far' ?> fa-heart"></i>
-                                <span class="like-count"><?= $likeCount ?></span>
-                            </button>
+                            <?php if ($isGuest): ?>
+                                <a href="<?= SITE_URL ?>/login.php" class="post-action-btn" title="เข้าสู่ระบบเพื่อกดถูกใจ">
+                                    <i class="far fa-heart"></i>
+                                    <span class="like-count"><?= $likeCount ?></span>
+                                </a>
+                            <?php else: ?>
+                                <button class="post-action-btn <?= $liked ? 'liked' : '' ?>"
+                                    onclick="toggleLike(<?= $post['id'] ?>, this)" id="like-btn-<?= $post['id'] ?>">
+                                    <i class="<?= $liked ? 'fas' : 'far' ?> fa-heart"></i>
+                                    <span class="like-count"><?= $likeCount ?></span>
+                                </button>
+                            <?php endif; ?>
                             <a href="<?= SITE_URL ?>/post_detail.php?id=<?= $post['id'] ?>#comments" class="post-action-btn">
                                 <i class="far fa-comment"></i>
                                 <span><?= $commentCount ?></span>

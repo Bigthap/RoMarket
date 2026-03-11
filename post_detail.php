@@ -2,9 +2,7 @@
 require_once 'config.php';
 require_once 'functions.php';
 
-if (!isLoggedIn()) {
-    redirect('login.php');
-}
+$isGuest = !isLoggedIn();
 
 $postId = intval($_GET['id'] ?? 0);
 if (!$postId)
@@ -34,8 +32,8 @@ $stmt->execute([$postId]);
 $comments = $stmt->fetchAll();
 
 $likeCount = getLikeCount($pdo, $postId);
-$liked = isLiked($pdo, $postId, $_SESSION['user_id']);
-$currentUser = getUserById($pdo, $_SESSION['user_id']);
+$liked = $isGuest ? false : isLiked($pdo, $postId, $_SESSION['user_id']);
+$currentUser = $isGuest ? null : getUserById($pdo, $_SESSION['user_id']);
 
 require_once 'header.php';
 ?>
@@ -63,7 +61,7 @@ require_once 'header.php';
                     </div>
                 </div>
             </div>
-            <?php if ($post['user_id'] == $_SESSION['user_id'] || isAdmin()): ?>
+            <?php if (!$isGuest && ($post['user_id'] == $_SESSION['user_id'] || isAdmin())): ?>
                 <button class="post-delete-btn" onclick="deletePost(<?= $post['id'] ?>, true)" title="ลบโพสต์">
                     <i class="fas fa-trash-alt"></i>
                 </button>
@@ -109,13 +107,18 @@ require_once 'header.php';
 
         <div class="post-detail-footer">
             <div class="post-actions">
-                <button class="post-action-btn <?= $liked ? 'liked' : '' ?>"
-                    onclick="toggleLike(<?= $post['id'] ?>, this)" id="like-btn-<?= $post['id'] ?>">
-                    <i class="<?= $liked ? 'fas' : 'far' ?> fa-heart"></i>
-                    <span class="like-count">
-                        <?= $likeCount ?>
-                    </span>
-                </button>
+                <?php if ($isGuest): ?>
+                    <a href="<?= SITE_URL ?>/login.php" class="post-action-btn" title="เข้าสู่ระบบเพื่อกดถูกใจ">
+                        <i class="far fa-heart"></i>
+                        <span class="like-count"><?= $likeCount ?></span>
+                    </a>
+                <?php else: ?>
+                    <button class="post-action-btn <?= $liked ? 'liked' : '' ?>"
+                        onclick="toggleLike(<?= $post['id'] ?>, this)" id="like-btn-<?= $post['id'] ?>">
+                        <i class="<?= $liked ? 'fas' : 'far' ?> fa-heart"></i>
+                        <span class="like-count"><?= $likeCount ?></span>
+                    </button>
+                <?php endif; ?>
                 <span class="post-action-btn">
                     <i class="far fa-comment"></i>
                     <span id="comment-count">
@@ -132,18 +135,24 @@ require_once 'header.php';
             <?= count($comments) ?>)
         </h3>
 
-        <div class="comment-form">
-            <img src="<?= SITE_URL ?>/uploads/avatars/<?= sanitize($currentUser['avatar']) ?>" alt=""
-                class="comment-avatar"
-                onerror="this.src='https://ui-avatars.com/api/?name=<?= urlencode($currentUser['username']) ?>&background=8b5cf6&color=fff'">
-            <div class="comment-input-wrap">
-                <textarea class="comment-input" id="commentInput" placeholder="เขียนคอมเมนต์..."></textarea>
-                <div class="comment-submit-row">
-                    <button class="btn btn-primary btn-sm" onclick="submitComment(<?= $post['id'] ?>)"><i
-                            class="fas fa-paper-plane"></i> ส่ง</button>
+        <?php if ($isGuest): ?>
+            <div class="comment-form guest-login-prompt">
+                <p><i class="fas fa-sign-in-alt"></i> <a href="<?= SITE_URL ?>/login.php">เข้าสู่ระบบ</a> เพื่อแสดงความคิดเห็น</p>
+            </div>
+        <?php else: ?>
+            <div class="comment-form">
+                <img src="<?= SITE_URL ?>/uploads/avatars/<?= sanitize($currentUser['avatar']) ?>" alt=""
+                    class="comment-avatar"
+                    onerror="this.src='https://ui-avatars.com/api/?name=<?= urlencode($currentUser['username']) ?>&background=8b5cf6&color=fff'">
+                <div class="comment-input-wrap">
+                    <textarea class="comment-input" id="commentInput" placeholder="เขียนคอมเมนต์..."></textarea>
+                    <div class="comment-submit-row">
+                        <button class="btn btn-primary btn-sm" onclick="submitComment(<?= $post['id'] ?>)"><i
+                                class="fas fa-paper-plane"></i> ส่ง</button>
+                    </div>
                 </div>
             </div>
-        </div>
+        <?php endif; ?>
 
         <div class="comment-list" id="commentList">
             <?php foreach ($comments as $comment): ?>

@@ -17,7 +17,7 @@ require_once 'header.php';
     <div class="fame-header-section">
         <div class="fame-icon"><i class="fas fa-trophy"></i></div>
         <h1 class="fame-main-title">Hall of Fame</h1>
-        <p class="fame-subtitle">รวมตำนาน ไอเท็มหายาก และ Trader ระดับเทพแห่ง RoMarket</p>
+        <p class="fame-subtitle">รวมผู้สร้างเว็ประดับตำนาน ผู้สร้างเว็ปRoMarket</p>
         <?php if (isAdmin()): ?>
             <a href="<?= SITE_URL ?>/create_fame.php" class="btn btn-primary" style="margin-top:1rem;">
                 <i class="fas fa-plus"></i> เพิ่ม Hall of Fame
